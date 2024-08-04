@@ -7,6 +7,7 @@ interface PostItemProps {
   writerName: string;
   Date: string;
   likes: number;
+  commentCount: number;
 }
 
 export default function PostItem({
@@ -15,6 +16,7 @@ export default function PostItem({
   writerName,
   Date,
   likes,
+  commentCount,
 }: PostItemProps) {
   const [backGroundColor, setBackGroundColor] = useState("white");
   function onMouseEnter() {
@@ -40,7 +42,9 @@ export default function PostItem({
           <Text textAlign="left" noOfLines={1}>
             {title}
           </Text>
-          <Text>[3]</Text>
+          {commentCount !== 0 && (
+            <Text color={"blackAlpha.500"}>[{commentCount}]</Text>
+          )}
         </HStack>
       </Spacer>
       <Text textAlign="center" noOfLines={1} w={"100px"}>

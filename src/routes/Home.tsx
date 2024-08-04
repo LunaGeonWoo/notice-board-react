@@ -34,6 +34,15 @@ export default function Home() {
         writerName={"김작성"}
         Date={"24/07/29"}
         likes={2}
+        commentCount={0}
+      />
+      <PostItem
+        id={2910}
+        title={"대충 쓴 글"}
+        writerName={"문건우"}
+        Date={"24/07/29"}
+        likes={2}
+        commentCount={12}
       />
     </Box>
   );
