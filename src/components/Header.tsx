@@ -13,6 +13,7 @@ import { IoClipboard } from "react-icons/io5";
 import LogInModal from "./LogInModal";
 import SignUpModal from "./SignUpModal";
 import { FaMoon, FaSun } from "react-icons/fa6";
+import { Link } from "react-router-dom";
 
 export default function Header() {
   const {
@@ -32,14 +33,16 @@ export default function Header() {
     <>
       <Box>
         <HStack p={"5"} justifyContent={"space-between"} borderBottomWidth={1}>
-          <HStack>
-            <Text fontSize={"2xl"} mr={5} fontWeight={"bold"}>
-              게시판
-            </Text>
-            <Box color={"twitter.600"}>
-              <IoClipboard size={"28"} />
-            </Box>
-          </HStack>
+          <Link to={"/"}>
+            <HStack>
+              <Text fontSize={"2xl"} mr={5} fontWeight={"bold"}>
+                게시판
+              </Text>
+              <Box color={"twitter.600"}>
+                <IoClipboard size={"28"} />
+              </Box>
+            </HStack>
+          </Link>
           <HStack>
             <IconButton
               variant={"outline"}
