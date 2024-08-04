@@ -11,13 +11,7 @@ import {
   Input,
   Button,
 } from "@chakra-ui/react";
-import {
-  FaCheck,
-  FaEnvelope,
-  FaFaceSmile,
-  FaLock,
-  FaUser,
-} from "react-icons/fa6";
+import { FaEnvelope, FaFaceSmile, FaLock, FaUser } from "react-icons/fa6";
 
 interface SingUpModalProps {
   isOpen: boolean;
