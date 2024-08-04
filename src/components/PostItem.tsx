@@ -1,5 +1,6 @@
-import { HStack, Spacer, Text } from "@chakra-ui/react";
+import { HStack, Spacer, Text, useColorModeValue } from "@chakra-ui/react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 interface PostItemProps {
   id: number;
@@ -18,22 +19,8 @@ export default function PostItem({
   likes,
   commentCount,
 }: PostItemProps) {
-  const [backGroundColor, setBackGroundColor] = useState("white");
-  function onMouseEnter() {
-    setBackGroundColor("whitesmoke");
-  }
-  function onMouseLeave() {
-    setBackGroundColor("white");
-  }
-
   return (
-    <HStack
-      py={2}
-      borderBottomWidth={1}
-      bg={backGroundColor}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-    >
+    <HStack py={2} borderBottomWidth={1}>
       <Text textAlign="center" w={"50px"}>
         {id}
       </Text>
@@ -42,6 +29,7 @@ export default function PostItem({
           <Text textAlign="left" noOfLines={1}>
             {title}
           </Text>
+
           {commentCount !== 0 && (
             <Text color={"blackAlpha.500"}>[{commentCount}]</Text>
           )}
