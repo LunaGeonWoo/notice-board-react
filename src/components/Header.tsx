@@ -2,9 +2,19 @@ import { Box, Button, HStack, Text, useDisclosure } from "@chakra-ui/react";
 
 import { IoClipboard } from "react-icons/io5";
 import LogInModal from "./LogInModal";
+import SignUpModal from "./SignUpModal";
 
 export default function Header() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isLogInOpen,
+    onOpen: onLogInOpen,
+    onClose: onLogInClose,
+  } = useDisclosure();
+  const {
+    isOpen: isSignUpOpen,
+    onOpen: onSignUpOpen,
+    onClose: onSignUpClose,
+  } = useDisclosure();
   return (
     <>
       <Box>
@@ -16,12 +26,15 @@ export default function Header() {
             <IoClipboard size={"28"} />
           </HStack>
           <HStack>
-            <Button onClick={onOpen}>로그인</Button>
-            <Button colorScheme="messenger">회원가입</Button>
+            <Button onClick={onLogInOpen}>로그인</Button>
+            <Button colorScheme="messenger" onClick={onSignUpOpen}>
+              회원가입
+            </Button>
           </HStack>
         </HStack>
       </Box>
-      <LogInModal isOpen={isOpen} onClose={onClose} />
+      <LogInModal isOpen={isLogInOpen} onClose={onLogInClose} />
+      <SignUpModal isOpen={isSignUpOpen} onClose={onSignUpClose} />
     </>
   );
 }
