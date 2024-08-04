@@ -1,6 +1,4 @@
-import { HStack, Spacer, Text, useColorModeValue } from "@chakra-ui/react";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { HStack, Spacer, Text } from "@chakra-ui/react";
 
 interface PostItemProps {
   id: number;
@@ -20,7 +18,12 @@ export default function PostItem({
   commentCount,
 }: PostItemProps) {
   return (
-    <HStack py={2} borderBottomWidth={1}>
+    <HStack
+      _hover={{ bg: "gray.200" }}
+      _dark={{ _hover: { bg: "gray.700" } }}
+      py={2}
+      borderBottomWidth={1}
+    >
       <Text textAlign="center" w={"50px"}>
         {id}
       </Text>
@@ -31,7 +34,9 @@ export default function PostItem({
           </Text>
 
           {commentCount !== 0 && (
-            <Text color={"blackAlpha.500"}>[{commentCount}]</Text>
+            <Text color={"blackAlpha.500"} _dark={{ color: "whiteAlpha.500" }}>
+              [{commentCount}]
+            </Text>
           )}
         </HStack>
       </Spacer>

@@ -34,7 +34,7 @@ export default function Home() {
         writerName={"김작성"}
         Date={"24/07/29"}
         likes={2}
-        commentCount={0}
+        commentCount={1}
       />
       <PostItem
         id={2910}
