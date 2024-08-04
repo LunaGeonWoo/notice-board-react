@@ -13,7 +13,7 @@ import { FaSearch } from "react-icons/fa";
 import PostTableHeader from "../components/PostTableHeader";
 import PostItem from "../components/PostItem";
 import { useQuery } from "@tanstack/react-query";
-import getPosts from "../api";
+import { getPosts } from "../api";
 
 interface IPost {
   id: number;
