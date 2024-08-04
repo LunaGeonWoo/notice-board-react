@@ -6,13 +6,31 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  Skeleton,
 } from "@chakra-ui/react";
 import { FaPencil } from "react-icons/fa6";
 import { FaSearch } from "react-icons/fa";
 import PostTableHeader from "../components/PostTableHeader";
 import PostItem from "../components/PostItem";
+import { useQuery } from "@tanstack/react-query";
+import getPosts from "../api";
+
+interface IPost {
+  id: number;
+  title: string;
+  writer: { id: number; name: string };
+  views: number;
+  likes_count: number;
+  num_of_reactions: number;
+  created_at: string;
+}
 
 export default function Home() {
+  const { isLoading, data: posts } = useQuery<IPost[]>({
+    queryKey: ["posts"],
+    queryFn: getPosts,
+  });
+
   return (
     <Box p={5}>
       <HStack pb={2}>
@@ -24,26 +42,25 @@ export default function Home() {
         </InputGroup>
         <Button leftIcon={<FaPencil />}>글쓰기</Button>
       </HStack>
-
       <PostTableHeader />
-      <PostItem
-        id={2910}
-        title={
-          "매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 매우 긴 글"
-        }
-        writerName={"김작성"}
-        Date={"24/07/29"}
-        likes={2}
-        commentCount={1}
-      />
-      <PostItem
-        id={2910}
-        title={"대충 쓴 글"}
-        writerName={"문건우"}
-        Date={"24/07/29"}
-        likes={2}
-        commentCount={12}
-      />
+
+      {isLoading === false
+        ? posts?.map((post) => {
+            return (
+              <PostItem
+                key={post.id}
+                id={post.id}
+                title={post.title}
+                writer={post.writer}
+                date={post.created_at}
+                likes={post.likes_count}
+                reactions={post.num_of_reactions}
+              />
+            );
+          })
+        : Array.from({ length: 10 }).map((_, index) => (
+            <Skeleton key={index} width={"100%"} minH={"10"} my={1} />
+          ))}
     </Box>
   );
 }

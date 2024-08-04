@@ -1,22 +1,24 @@
 import { HStack, Spacer, Text } from "@chakra-ui/react";
+import { format } from "date-fns";
 
-interface PostItemProps {
+interface IPostItemProps {
   id: number;
   title: string;
-  writerName: string;
-  Date: string;
+  writer: { id: number; name: string };
+  date: string;
   likes: number;
-  commentCount: number;
+  reactions: number;
 }
 
 export default function PostItem({
   id,
   title,
-  writerName,
-  Date,
+  writer,
+  date,
   likes,
-  commentCount,
-}: PostItemProps) {
+  reactions,
+}: IPostItemProps) {
+  const formattedDate = format(new Date(date), "yy/MM/dd");
   return (
     <HStack
       _hover={{ bg: "gray.200" }}
@@ -33,18 +35,18 @@ export default function PostItem({
             {title}
           </Text>
 
-          {commentCount !== 0 && (
+          {reactions !== 0 && (
             <Text color={"blackAlpha.500"} _dark={{ color: "whiteAlpha.500" }}>
-              [{commentCount}]
+              [{reactions}]
             </Text>
           )}
         </HStack>
       </Spacer>
       <Text textAlign="center" noOfLines={1} w={"100px"}>
-        {writerName}
+        {writer.name}
       </Text>
       <Text textAlign="center" w={"100px"}>
-        {Date}
+        {formattedDate}
       </Text>
       <Text textAlign="center" w={"50px"}>
         {likes}

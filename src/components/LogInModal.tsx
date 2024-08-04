@@ -13,12 +13,12 @@ import {
 } from "@chakra-ui/react";
 import { FaLock, FaUser } from "react-icons/fa6";
 
-interface LogInModalProps {
+interface ILogInModalProps {
   isOpen: boolean;
   onClose: VoidFunction;
 }
 
-export default function LogInModal({ isOpen, onClose }: LogInModalProps) {
+export default function LogInModal({ isOpen, onClose }: ILogInModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />

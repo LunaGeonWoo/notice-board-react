@@ -13,12 +13,12 @@ import {
 } from "@chakra-ui/react";
 import { FaEnvelope, FaFaceSmile, FaLock, FaUser } from "react-icons/fa6";
 
-interface SingUpModalProps {
+interface ISingUpModalProps {
   isOpen: boolean;
   onClose: VoidFunction;
 }
 
-export default function SignUpModal({ isOpen, onClose }: SingUpModalProps) {
+export default function SignUpModal({ isOpen, onClose }: ISingUpModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
