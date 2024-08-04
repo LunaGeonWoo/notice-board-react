@@ -5,6 +5,7 @@ import {
   IconButton,
   Text,
   useColorMode,
+  useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
 
@@ -24,7 +25,8 @@ export default function Header() {
     onOpen: onSignUpOpen,
     onClose: onSignUpClose,
   } = useDisclosure();
-  const { colorMode, toggleColorMode } = useColorMode();
+  const { toggleColorMode } = useColorMode();
+  const colorModeIcon = useColorModeValue(<FaMoon />, <FaSun />);
 
   return (
     <>
@@ -43,7 +45,7 @@ export default function Header() {
               variant={"outline"}
               aria-label="Toggle dark mode"
               onClick={toggleColorMode}
-              icon={colorMode === "dark" ? <FaSun /> : <FaMoon />}
+              icon={colorModeIcon}
               borderRadius={"50%"}
             />
             <Button onClick={onLogInOpen}>로그인</Button>
