@@ -6,6 +6,8 @@ import {
   Button,
   Heading,
   HStack,
+  Skeleton,
+  SkeletonText,
   Spacer,
   Text,
   VStack,
@@ -43,9 +45,13 @@ export default function PostDetail() {
 
   return (
     <Box p={5}>
-      <VStack align="start" borderBottomWidth={3} pb={2}>
+      <VStack align="start" borderBottomWidth={3} pb={2} mb={5}>
         <HStack w={"100%"} minH={"10"}>
-          <Heading fontSize={"22"}>{post?.title}</Heading>
+          {isLoading ? (
+            <Skeleton isLoaded={!isLoading} h={"29.25px"} w={"400px"} />
+          ) : (
+            <Heading fontSize={"22"}>{post?.title}</Heading>
+          )}
           <Spacer />
           {post?.is_mine === true && (
             <HStack>
@@ -55,14 +61,21 @@ export default function PostDetail() {
           )}
         </HStack>
         <HStack w={"100%"}>
-          <Text>{post?.writer.name}</Text>
-          <Text>|</Text>
-          <Text>
-            {post &&
-              format(new Date(post.created_at), "yyyy.MM.dd HH:mm:ss", {
-                locale: ko,
-              })}
-          </Text>
+          {isLoading ? (
+            <Skeleton w={"210px"} h={"24.01px"} />
+          ) : (
+            <>
+              <Text>{post?.writer.name}</Text>
+              <Text>|</Text>
+              <Text>
+                {post &&
+                  format(new Date(post.created_at), "yyyy.MM.dd HH:mm:ss", {
+                    locale: ko,
+                  })}
+              </Text>
+            </>
+          )}
+
           {post?.is_modified === true && (
             <Text>
               {(() => {
@@ -88,23 +101,40 @@ export default function PostDetail() {
             </Text>
           )}
           <Spacer />
-          <Text>조회 {post?.views}</Text>
-          <Text>|</Text>
-          <Text>좋아요 {post?.likes_count}</Text>
-          <Text>|</Text>
-          <Button variant={"outline"} borderRadius={"20px"}>
-            반응 {post?.num_of_reactions}
-          </Button>
+          {isLoading ? (
+            <Skeleton w={"150px"} h={"24.01px"} />
+          ) : (
+            <>
+              <Text>조회 {post?.views}</Text>
+              <Text>|</Text>
+              <Text>좋아요 {post?.likes_count}</Text>
+              <Text>|</Text>
+            </>
+          )}
+          {isLoading ? (
+            <Skeleton w={"79.3px"} h={"40px"} />
+          ) : (
+            <Button variant={"outline"} borderRadius={"20px"}>
+              반응 {post?.num_of_reactions}
+            </Button>
+          )}
         </HStack>
       </VStack>
-      <Text pt={5}>{post?.detail}</Text>
+      {isLoading ? (
+        <SkeletonText skeletonHeight={"4"} spacing={"2"} />
+      ) : (
+        <Text>{post?.detail}</Text>
+      )}
+
       <HStack p={5} justifyContent={"center"}>
         <Box borderWidth="1px" borderRadius="lg" px={7} py={4}>
           <HStack spacing={5} alignItems="center">
             <HStack>
-              <Text color="red.500" fontWeight="bold">
-                {post?.likes_count}
-              </Text>
+              <Skeleton isLoaded={!isLoading} minW={"8.63px"} minH={"24px"}>
+                <Text color="red.500" fontWeight="bold">
+                  {post?.likes_count}
+                </Text>
+              </Skeleton>
               <Button
                 variant="solid"
                 colorScheme="telegram"
@@ -123,7 +153,9 @@ export default function PostDetail() {
               >
                 싫어요
               </Button>
-              <Text>{post?.dislikes_count}</Text>
+              <Skeleton isLoaded={!isLoading} minW={"8.63px"} minH={"24px"}>
+                <Text>{post?.dislikes_count}</Text>
+              </Skeleton>
             </HStack>
           </HStack>
         </Box>
