@@ -192,43 +192,58 @@ export default function PostDetail() {
         </Button>
       </HStack>
       <VStack my={2}>
-        {comments?.map((comment) => (
-          <VStack
-            align="start"
-            spacing={2}
-            p={4}
-            borderWidth={1}
-            borderRadius="md"
-            w="full"
-          >
-            <HStack w="full">
-              <Text fontWeight="bold">{comment.writer.name}</Text>
-              <Spacer />
-              {comment.is_modified && (
-                <Text fontSize={"sm"} fontWeight={"semibold"}>
-                  {formatModifiedDate(comment.modified_at)}
-                </Text>
-              )}
-              <Text fontSize="sm" color="gray.500">
-                {format(new Date(comment.created_at), "yyyy.MM.dd HH:mm:ss", {
-                  locale: ko,
-                })}
-              </Text>
-            </HStack>
-            <Text>{comment.detail}</Text>
-            {comment.replies_count !== 0 && (
-              <Button
-                fontSize="sm"
-                colorScheme="telegram"
-                variant={"ghost"}
-                leftIcon={<BiSolidDownArrow />}
-                borderRadius={"20px"}
+        {isCommentsLoading ? (
+          <>
+            <Skeleton w={"full"} height={138} />
+            <Skeleton w={"full"} height={90} />
+            <Skeleton w={"full"} height={90} />
+          </>
+        ) : (
+          <>
+            {comments?.map((comment) => (
+              <VStack
+                key={comment.id}
+                align="start"
+                spacing={2}
+                p={4}
+                borderWidth={1}
+                borderRadius="md"
+                w="full"
               >
-                답글 {comment.replies_count}개
-              </Button>
-            )}
-          </VStack>
-        ))}
+                <HStack w="full">
+                  <Text fontWeight="bold">{comment.writer.name}</Text>
+                  <Spacer />
+                  {comment.is_modified && (
+                    <Text fontSize={"sm"} fontWeight={"semibold"}>
+                      {formatModifiedDate(comment.modified_at)}
+                    </Text>
+                  )}
+                  <Text fontSize="sm" color="gray.500">
+                    {format(
+                      new Date(comment.created_at),
+                      "yyyy.MM.dd HH:mm:ss",
+                      {
+                        locale: ko,
+                      }
+                    )}
+                  </Text>
+                </HStack>
+                <Text>{comment.detail}</Text>
+                {comment.replies_count !== 0 && (
+                  <Button
+                    fontSize="sm"
+                    colorScheme="telegram"
+                    variant={"ghost"}
+                    leftIcon={<BiSolidDownArrow />}
+                    borderRadius={"20px"}
+                  >
+                    답글 {comment.replies_count}개
+                  </Button>
+                )}
+              </VStack>
+            ))}
+          </>
+        )}
       </VStack>
     </Box>
   );
