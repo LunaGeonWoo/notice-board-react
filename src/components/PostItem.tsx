@@ -21,7 +21,7 @@ export default function PostItem({
 }: IPostItemProps) {
   const formattedDate = format(new Date(date), "yy/MM/dd");
   return (
-    <Link to={`posts/${id}/`}>
+    <Link to={`/posts/${id}/`}>
       <HStack
         _hover={{ bg: "gray.200" }}
         _dark={{ _hover: { bg: "gray.700" } }}

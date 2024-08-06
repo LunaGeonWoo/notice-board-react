@@ -24,7 +24,8 @@ import {
 } from "react-icons/bi";
 import { BiSolidDownArrow } from "react-icons/bi";
 import { formatModifiedDate } from "../utils/dateUtils";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import Home from "./Home";
 
 interface IPostDetail {
   id: number;
@@ -59,6 +60,7 @@ interface IComment {
 }
 
 export default function PostDetail() {
+  const [commentVisible, setCommentVisible] = useState(true);
   const { postId } = useParams();
   const postRef = useRef<HTMLDivElement>(null);
   const reactionsRef = useRef<HTMLDivElement>(null);
@@ -66,12 +68,14 @@ export default function PostDetail() {
     queryKey: [`posts`, postId],
     queryFn: getPost,
   });
-  const { isLoading: isCommentsLoading, data: comments } = useQuery<IComment[]>(
-    {
-      queryKey: [`posts`, postId, `comments`],
-      queryFn: getPostComments,
-    }
-  );
+  const {
+    isLoading: isCommentsLoading,
+    data: comments,
+    refetch: refetchComments,
+  } = useQuery<IComment[]>({
+    queryKey: [`posts`, postId, `comments`],
+    queryFn: getPostComments,
+  });
   const scrollToPost = () => {
     postRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -199,67 +203,77 @@ export default function PostDetail() {
         <Button variant={"unstyled"} p={2} onClick={scrollToPost}>
           본문 보기
         </Button>
-        <Button variant={""} p={2} rightIcon={<BiSolidUpArrow />}>
-          댓글 닫기
+        <Text>|</Text>
+        <Button
+          variant={""}
+          p={2}
+          rightIcon={commentVisible ? <BiSolidUpArrow /> : <BiSolidDownArrow />}
+          onClick={() => setCommentVisible((current) => !current)}
+        >
+          {commentVisible ? "댓글 닫기" : "댓글 열기"}
         </Button>
-        <Button variant={"unstyled"} p={2}>
+        <Text>|</Text>
+        <Button variant={"unstyled"} p={2} onClick={() => refetchComments}>
           새로고침
         </Button>
       </HStack>
-      <VStack my={2}>
-        {isCommentsLoading ? (
-          <>
-            <Skeleton w={"full"} height={138} />
-            <Skeleton w={"full"} height={90} />
-            <Skeleton w={"full"} height={90} />
-          </>
-        ) : (
-          <>
-            {comments?.map((comment) => (
-              <VStack
-                key={comment.id}
-                align="start"
-                spacing={2}
-                p={4}
-                borderWidth={1}
-                borderRadius="md"
-                w="full"
-              >
-                <HStack w="full">
-                  <Text fontWeight="bold">{comment.writer.name}</Text>
-                  <Spacer />
-                  {comment.is_modified && (
-                    <Text fontSize={"sm"} fontWeight={"semibold"}>
-                      {formatModifiedDate(comment.modified_at)}
-                    </Text>
-                  )}
-                  <Text fontSize="sm" color="gray.500">
-                    {format(
-                      new Date(comment.created_at),
-                      "yyyy.MM.dd HH:mm:ss",
-                      {
-                        locale: ko,
-                      }
+      {commentVisible && (
+        <VStack my={2}>
+          {isCommentsLoading ? (
+            <>
+              <Skeleton w={"full"} height={138} />
+              <Skeleton w={"full"} height={90} />
+              <Skeleton w={"full"} height={90} />
+            </>
+          ) : (
+            <>
+              {comments?.map((comment) => (
+                <VStack
+                  key={comment.id}
+                  align="start"
+                  spacing={2}
+                  p={4}
+                  borderWidth={1}
+                  borderRadius="md"
+                  w="full"
+                >
+                  <HStack w="full">
+                    <Text fontWeight="bold">{comment.writer.name}</Text>
+                    <Spacer />
+                    {comment.is_modified && (
+                      <Text fontSize={"sm"} fontWeight={"semibold"}>
+                        {formatModifiedDate(comment.modified_at)}
+                      </Text>
                     )}
-                  </Text>
-                </HStack>
-                <Text>{comment.detail}</Text>
-                {comment.replies_count !== 0 && (
-                  <Button
-                    fontSize="sm"
-                    colorScheme="telegram"
-                    variant={"ghost"}
-                    leftIcon={<BiSolidDownArrow />}
-                    borderRadius={"20px"}
-                  >
-                    답글 {comment.replies_count}개
-                  </Button>
-                )}
-              </VStack>
-            ))}
-          </>
-        )}
-      </VStack>
+                    <Text fontSize="sm" color="gray.500">
+                      {format(
+                        new Date(comment.created_at),
+                        "yyyy.MM.dd HH:mm:ss",
+                        {
+                          locale: ko,
+                        }
+                      )}
+                    </Text>
+                  </HStack>
+                  <Text>{comment.detail}</Text>
+                  {comment.replies_count !== 0 && (
+                    <Button
+                      fontSize="sm"
+                      colorScheme="telegram"
+                      variant={"ghost"}
+                      leftIcon={<BiSolidDownArrow />}
+                      borderRadius={"20px"}
+                    >
+                      답글 {comment.replies_count}개
+                    </Button>
+                  )}
+                </VStack>
+              ))}
+            </>
+          )}
+        </VStack>
+      )}
+      <Home />
     </Box>
   );
 }
