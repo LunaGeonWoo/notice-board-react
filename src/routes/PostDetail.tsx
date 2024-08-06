@@ -24,6 +24,7 @@ import {
 } from "react-icons/bi";
 import { BiSolidDownArrow } from "react-icons/bi";
 import { formatModifiedDate } from "../utils/dateUtils";
+import { useRef } from "react";
 
 interface IPostDetail {
   id: number;
@@ -59,6 +60,8 @@ interface IComment {
 
 export default function PostDetail() {
   const { postId } = useParams();
+  const postRef = useRef<HTMLDivElement>(null);
+  const reactionsRef = useRef<HTMLDivElement>(null);
   const { isLoading: isPostLoading, data: post } = useQuery<IPostDetail>({
     queryKey: [`posts`, postId],
     queryFn: getPost,
@@ -69,9 +72,16 @@ export default function PostDetail() {
       queryFn: getPostComments,
     }
   );
+  const scrollToPost = () => {
+    postRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+  const scrollToReactions = () => {
+    reactionsRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
     <Box p={5}>
+      <div ref={postRef} />
       <VStack align="start" borderBottomWidth={3} pb={2} mb={5}>
         <HStack w={"100%"} minH={"10"}>
           {isPostLoading ? (
@@ -120,7 +130,11 @@ export default function PostDetail() {
           {isPostLoading ? (
             <Skeleton w={"79.3px"} h={"40px"} />
           ) : (
-            <Button variant={"outline"} borderRadius={"20px"}>
+            <Button
+              variant={"outline"}
+              borderRadius={"20px"}
+              onClick={scrollToReactions}
+            >
               반응 {post?.num_of_reactions}
             </Button>
           )}
@@ -167,6 +181,7 @@ export default function PostDetail() {
         </Box>
       </HStack>
 
+      <div ref={reactionsRef} />
       <HStack borderBottomWidth={2} pb={2}>
         <Text>
           전체 반응{" "}
@@ -181,7 +196,7 @@ export default function PostDetail() {
           <option value={"reply"}>답글순</option>
         </Select>
         <Spacer />
-        <Button variant={"unstyled"} p={2}>
+        <Button variant={"unstyled"} p={2} onClick={scrollToPost}>
           본문 보기
         </Button>
         <Button variant={""} p={2} rightIcon={<BiSolidUpArrow />}>
