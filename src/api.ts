@@ -9,6 +9,13 @@ export const getPosts = () =>
   instance.get("posts/").then((response) => response.data);
 
 export const getPost = ({ queryKey }: QueryFunctionContext) => {
-  const [_, postId] = queryKey;
+  const [, postId] = queryKey;
   return instance.get(`posts/${postId}/`).then((response) => response.data);
+};
+
+export const getPostComments = ({ queryKey }: QueryFunctionContext) => {
+  const [, postId] = queryKey;
+  return instance
+    .get(`posts/${postId}/comments/`)
+    .then((response) => response.data);
 };

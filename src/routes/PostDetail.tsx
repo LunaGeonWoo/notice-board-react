@@ -1,11 +1,12 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getPost } from "../api";
+import { getPost, getPostComments } from "../api";
 import {
   Box,
   Button,
   Heading,
   HStack,
+  Select,
   Skeleton,
   SkeletonText,
   Spacer,
@@ -15,6 +16,7 @@ import {
 import { ko } from "date-fns/locale";
 import { format } from "date-fns";
 import { BiDislike, BiLike, BiSolidDislike, BiSolidLike } from "react-icons/bi";
+import { MdArrowDropUp } from "react-icons/md";
 
 interface IPostDetail {
   id: number;
@@ -35,20 +37,38 @@ interface IPostDetail {
   is_modified: boolean;
   modified_at: string;
 }
+interface IComment {
+  id: number;
+  writer: {
+    id: number;
+    name: string;
+  };
+  replies_count: number;
+  created_at: string;
+  modified_at: string;
+  detail: string;
+  is_modified: boolean;
+}
 
 export default function PostDetail() {
   const { postId } = useParams();
-  const { isLoading, data: post } = useQuery<IPostDetail>({
+  const { isLoading: isPostLoading, data: post } = useQuery<IPostDetail>({
     queryKey: [`posts`, postId],
     queryFn: getPost,
   });
+  const { isLoading: isCommentsLoading, data: comments } = useQuery<IComment[]>(
+    {
+      queryKey: [`posts`, postId, `comments`],
+      queryFn: getPostComments,
+    }
+  );
 
   return (
     <Box p={5}>
       <VStack align="start" borderBottomWidth={3} pb={2} mb={5}>
         <HStack w={"100%"} minH={"10"}>
-          {isLoading ? (
-            <Skeleton isLoaded={!isLoading} h={"29.25px"} w={"400px"} />
+          {isPostLoading ? (
+            <Skeleton isLoaded={!isPostLoading} h={"29.25px"} w={"400px"} />
           ) : (
             <Heading fontSize={"22"}>{post?.title}</Heading>
           )}
@@ -61,7 +81,7 @@ export default function PostDetail() {
           )}
         </HStack>
         <HStack w={"100%"}>
-          {isLoading ? (
+          {isPostLoading ? (
             <Skeleton w={"210px"} h={"24.01px"} />
           ) : (
             <>
@@ -101,7 +121,7 @@ export default function PostDetail() {
             </Text>
           )}
           <Spacer />
-          {isLoading ? (
+          {isPostLoading ? (
             <Skeleton w={"150px"} h={"24.01px"} />
           ) : (
             <>
@@ -111,7 +131,7 @@ export default function PostDetail() {
               <Text>|</Text>
             </>
           )}
-          {isLoading ? (
+          {isPostLoading ? (
             <Skeleton w={"79.3px"} h={"40px"} />
           ) : (
             <Button variant={"outline"} borderRadius={"20px"}>
@@ -120,7 +140,7 @@ export default function PostDetail() {
           )}
         </HStack>
       </VStack>
-      {isLoading ? (
+      {isPostLoading ? (
         <SkeletonText skeletonHeight={"4"} spacing={"2"} />
       ) : (
         <Text>{post?.detail}</Text>
@@ -130,7 +150,7 @@ export default function PostDetail() {
         <Box borderWidth="1px" borderRadius="lg" px={7} py={4}>
           <HStack spacing={5} alignItems="center">
             <HStack>
-              <Skeleton isLoaded={!isLoading} minW={"8.63px"} minH={"24px"}>
+              <Skeleton isLoaded={!isPostLoading} minW={"8.63px"} minH={"24px"}>
                 <Text color="red.500" fontWeight="bold">
                   {post?.likes_count}
                 </Text>
@@ -153,13 +173,69 @@ export default function PostDetail() {
               >
                 싫어요
               </Button>
-              <Skeleton isLoaded={!isLoading} minW={"8.63px"} minH={"24px"}>
+              <Skeleton isLoaded={!isPostLoading} minW={"8.63px"} minH={"24px"}>
                 <Text>{post?.dislikes_count}</Text>
               </Skeleton>
             </HStack>
           </HStack>
         </Box>
       </HStack>
+
+      <HStack borderBottomWidth={2} pb={2}>
+        <Text>
+          전체 반응{" "}
+          <Text as="span" color="red.500">
+            {post?.num_of_reactions}
+          </Text>
+          개
+        </Text>
+        <Select w={100}>
+          <option value={"register"}>등록순</option>
+          <option value={"recent"}>최신순</option>
+          <option value={"reply"}>답글순</option>
+        </Select>
+        <Spacer />
+        <Button variant={"unstyled"} p={2}>
+          본문 보기
+        </Button>
+        <Button variant={""} p={2}>
+          댓글 닫기
+          <MdArrowDropUp />
+        </Button>
+        <Button variant={"unstyled"} p={2}>
+          새로고침
+        </Button>
+      </HStack>
+      <VStack my={2}>
+        {comments?.map((comment) => (
+          <VStack
+            align="start"
+            spacing={2}
+            p={4}
+            borderWidth={1}
+            borderRadius="md"
+            w="full"
+          >
+            <HStack w="full" justifyContent="space-between">
+              <Text fontWeight="bold">{comment.writer.name}</Text>
+              <Text fontSize="sm" color="gray.500">
+                {comment.created_at}
+              </Text>
+            </HStack>
+            <Text>{comment.detail}</Text>
+            <HStack w="full" justifyContent="space-between">
+              <HStack spacing={4}>
+                <Button size="sm" variant="ghost">
+                  답글
+                </Button>
+              </HStack>
+              <Text fontSize="sm" color="gray.500">
+                답글 {comment.replies_count}개
+              </Text>
+            </HStack>
+          </VStack>
+        ))}
+      </VStack>
     </Box>
   );
 }
