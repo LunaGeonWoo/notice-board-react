@@ -15,8 +15,15 @@ import {
 } from "@chakra-ui/react";
 import { ko } from "date-fns/locale";
 import { format } from "date-fns";
-import { BiDislike, BiLike, BiSolidDislike, BiSolidLike } from "react-icons/bi";
-import { MdArrowDropUp } from "react-icons/md";
+import {
+  BiDislike,
+  BiLike,
+  BiSolidDislike,
+  BiSolidLike,
+  BiSolidUpArrow,
+} from "react-icons/bi";
+import { BiSolidDownArrow } from "react-icons/bi";
+import { formatModifiedDate } from "../utils/dateUtils";
 
 interface IPostDetail {
   id: number;
@@ -97,28 +104,7 @@ export default function PostDetail() {
           )}
 
           {post?.is_modified === true && (
-            <Text>
-              {(() => {
-                const modifiedDate = new Date(post.modified_at);
-                const now = new Date();
-                const diffInSeconds = Math.floor(
-                  (now.getTime() - modifiedDate.getTime()) / 1000
-                );
-                const diffInMinutes = Math.floor(diffInSeconds / 60);
-                const diffInHours = Math.floor(diffInMinutes / 60);
-                const diffInDays = Math.floor(diffInHours / 24);
-
-                if (diffInDays > 0) {
-                  return `( ${diffInDays}일 전에 수정됨 )`;
-                } else if (diffInHours > 0) {
-                  return `( ${diffInHours}시간 전에 수정됨 )`;
-                } else if (diffInMinutes > 0) {
-                  return `( ${diffInMinutes}분 전에 수정됨 )`;
-                } else {
-                  return `( 방금 수정됨 )`;
-                }
-              })()}
-            </Text>
+            <Text>{formatModifiedDate(post.modified_at)}</Text>
           )}
           <Spacer />
           {isPostLoading ? (
@@ -198,9 +184,8 @@ export default function PostDetail() {
         <Button variant={"unstyled"} p={2}>
           본문 보기
         </Button>
-        <Button variant={""} p={2}>
+        <Button variant={""} p={2} rightIcon={<BiSolidUpArrow />}>
           댓글 닫기
-          <MdArrowDropUp />
         </Button>
         <Button variant={"unstyled"} p={2}>
           새로고침
@@ -216,23 +201,32 @@ export default function PostDetail() {
             borderRadius="md"
             w="full"
           >
-            <HStack w="full" justifyContent="space-between">
+            <HStack w="full">
               <Text fontWeight="bold">{comment.writer.name}</Text>
+              <Spacer />
+              {comment.is_modified && (
+                <Text fontSize={"sm"} fontWeight={"semibold"}>
+                  {formatModifiedDate(comment.modified_at)}
+                </Text>
+              )}
               <Text fontSize="sm" color="gray.500">
-                {comment.created_at}
+                {format(new Date(comment.created_at), "yyyy.MM.dd HH:mm:ss", {
+                  locale: ko,
+                })}
               </Text>
             </HStack>
             <Text>{comment.detail}</Text>
-            <HStack w="full" justifyContent="space-between">
-              <HStack spacing={4}>
-                <Button size="sm" variant="ghost">
-                  답글
-                </Button>
-              </HStack>
-              <Text fontSize="sm" color="gray.500">
+            {comment.replies_count !== 0 && (
+              <Button
+                fontSize="sm"
+                colorScheme="telegram"
+                variant={"ghost"}
+                leftIcon={<BiSolidDownArrow />}
+                borderRadius={"20px"}
+              >
                 답글 {comment.replies_count}개
-              </Text>
-            </HStack>
+              </Button>
+            )}
           </VStack>
         ))}
       </VStack>
