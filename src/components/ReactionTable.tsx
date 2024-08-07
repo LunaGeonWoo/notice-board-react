@@ -98,11 +98,11 @@ export default function ReactionTable({
                   key={comment.id}
                   id={comment.id}
                   writer={comment.writer}
-                  replies_count={comment.replies_count}
-                  created_at={comment.created_at}
-                  modified_at={comment.modified_at}
+                  repliesCount={comment.replies_count}
+                  createdAt={comment.created_at}
+                  modifiedAt={comment.modified_at}
                   detail={comment.detail}
-                  is_modified={comment.is_modified}
+                  isModified={comment.is_modified}
                 />
               ))}
             </>

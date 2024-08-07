@@ -1,8 +1,19 @@
-import { Button, HStack, Spacer, Text, VStack } from "@chakra-ui/react";
+import {
+  Button,
+  HStack,
+  Skeleton,
+  Spacer,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import { formatModifiedDate } from "../utils/dateUtils";
 import { ko } from "date-fns/locale";
 import { format } from "date-fns";
-import { BiSolidDownArrow } from "react-icons/bi";
+import { BiSolidDownArrow, BiSolidUpArrow } from "react-icons/bi";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getCommentReplies } from "../api";
+import Reply from "./Reply";
 
 interface ICommentProps {
   id: number;
@@ -10,7 +21,19 @@ interface ICommentProps {
     id: number;
     name: string;
   };
-  replies_count: number;
+  repliesCount: number;
+  createdAt: string;
+  modifiedAt: string;
+  detail: string;
+  isModified: boolean;
+}
+
+interface IReply {
+  id: number;
+  writer: {
+    id: number;
+    name: string;
+  };
   created_at: string;
   modified_at: string;
   detail: string;
@@ -20,12 +43,17 @@ interface ICommentProps {
 export default function Comment({
   id,
   writer,
-  replies_count,
-  created_at,
-  modified_at,
+  repliesCount,
+  createdAt,
+  modifiedAt,
   detail,
-  is_modified,
+  isModified,
 }: ICommentProps) {
+  const [replyVisible, setReplyVisible] = useState(false);
+  const { data: replies, isLoading } = useQuery<IReply[]>({
+    queryKey: ["comments", id, "replies"],
+    queryFn: getCommentReplies,
+  });
   return (
     <VStack
       key={id}
@@ -39,29 +67,48 @@ export default function Comment({
       <HStack w="full">
         <Text fontWeight="bold">{writer.name}</Text>
         <Spacer />
-        {is_modified && (
+        {isModified && (
           <Text fontSize={"sm"} fontWeight={"semibold"}>
-            {formatModifiedDate(modified_at)}
+            {formatModifiedDate(modifiedAt)}
           </Text>
         )}
         <Text fontSize="sm" color="gray.500">
-          {format(new Date(created_at), "yyyy.MM.dd HH:mm:ss", {
+          {format(new Date(createdAt), "yyyy.MM.dd HH:mm:ss", {
             locale: ko,
           })}
         </Text>
       </HStack>
       <Text>{detail}</Text>
-      {replies_count !== 0 && (
+      {repliesCount !== 0 && (
         <Button
           fontSize="sm"
           colorScheme="telegram"
           variant={"ghost"}
-          leftIcon={<BiSolidDownArrow />}
+          leftIcon={replyVisible ? <BiSolidUpArrow /> : <BiSolidDownArrow />}
           borderRadius={"20px"}
+          onClick={() => {
+            setReplyVisible((current) => !current);
+          }}
         >
-          답글 {replies_count}개
+          답글 {repliesCount}개
         </Button>
       )}
+      {replyVisible &&
+        (isLoading
+          ? Array.from({ length: repliesCount }).map((_, index) => (
+              <Skeleton key={index} ml={"10px"} w={"full"} h={"82px"} />
+            ))
+          : replies?.map((reply) => (
+              <Reply
+                key={reply.id}
+                id={reply.id}
+                writer={reply.writer}
+                createdAt={reply.created_at}
+                modifiedAt={reply.modified_at}
+                detail={reply.detail}
+                isModified={reply.is_modified}
+              />
+            )))}
     </VStack>
   );
 }

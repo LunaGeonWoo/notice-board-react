@@ -19,3 +19,9 @@ export const getPostComments = ({ queryKey }: QueryFunctionContext) => {
     .get(`posts/${postId}/comments/`)
     .then((response) => response.data);
 };
+export const getCommentReplies = ({ queryKey }: QueryFunctionContext) => {
+  const [, commentId] = queryKey;
+  return instance
+    .get(`comments/${commentId}/replies/`)
+    .then((response) => response.data);
+};

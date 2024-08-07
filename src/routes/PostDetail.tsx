@@ -12,13 +12,10 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { ko } from "date-fns/locale";
-import { format } from "date-fns";
 import { BiDislike, BiLike, BiSolidDislike, BiSolidLike } from "react-icons/bi";
 import {} from "react-icons/bi";
-import { formatModifiedDate } from "../utils/dateUtils";
+import formatCreatedDate, { formatModifiedDate } from "../utils/dateUtils";
 import { useRef } from "react";
-import Home from "./Home";
 import ReactionTable from "../components/ReactionTable";
 
 interface IPostDetail {
@@ -82,12 +79,7 @@ export default function PostDetail() {
             <>
               <Text>{post?.writer.name}</Text>
               <Text>|</Text>
-              <Text>
-                {post &&
-                  format(new Date(post.created_at), "yyyy.MM.dd HH:mm:ss", {
-                    locale: ko,
-                  })}
-              </Text>
+              <Text>{post && formatCreatedDate(post.created_at)}</Text>
             </>
           )}
 
@@ -161,7 +153,6 @@ export default function PostDetail() {
 
       <div ref={reactionsRef} />
       <ReactionTable postId={parseInt(postId!)} scrollToPost={scrollToPost} />
-      <Home />
     </Box>
   );
 }

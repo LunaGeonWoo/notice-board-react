@@ -1,3 +1,6 @@
+import { format } from "date-fns";
+import { ko } from "date-fns/locale";
+
 export function formatModifiedDate(modifiedAt: string): string {
   const modifiedDate = new Date(modifiedAt);
   const now = new Date();
@@ -17,4 +20,9 @@ export function formatModifiedDate(modifiedAt: string): string {
   } else {
     return `( 방금 수정됨 )`;
   }
+}
+export default function formatCreatedDate(createdAt: string): string {
+  return format(new Date(createdAt), "yyyy.MM.dd HH:mm:ss", {
+    locale: ko,
+  });
 }
