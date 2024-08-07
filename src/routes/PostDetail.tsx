@@ -26,6 +26,7 @@ import { BiSolidDownArrow } from "react-icons/bi";
 import { formatModifiedDate } from "../utils/dateUtils";
 import { useRef, useState } from "react";
 import Home from "./Home";
+import Comment from "../components/Comment";
 
 interface IPostDetail {
   id: number;
@@ -228,46 +229,15 @@ export default function PostDetail() {
           ) : (
             <>
               {comments?.map((comment) => (
-                <VStack
-                  key={comment.id}
-                  align="start"
-                  spacing={2}
-                  p={4}
-                  borderWidth={1}
-                  borderRadius="md"
-                  w="full"
-                >
-                  <HStack w="full">
-                    <Text fontWeight="bold">{comment.writer.name}</Text>
-                    <Spacer />
-                    {comment.is_modified && (
-                      <Text fontSize={"sm"} fontWeight={"semibold"}>
-                        {formatModifiedDate(comment.modified_at)}
-                      </Text>
-                    )}
-                    <Text fontSize="sm" color="gray.500">
-                      {format(
-                        new Date(comment.created_at),
-                        "yyyy.MM.dd HH:mm:ss",
-                        {
-                          locale: ko,
-                        }
-                      )}
-                    </Text>
-                  </HStack>
-                  <Text>{comment.detail}</Text>
-                  {comment.replies_count !== 0 && (
-                    <Button
-                      fontSize="sm"
-                      colorScheme="telegram"
-                      variant={"ghost"}
-                      leftIcon={<BiSolidDownArrow />}
-                      borderRadius={"20px"}
-                    >
-                      답글 {comment.replies_count}개
-                    </Button>
-                  )}
-                </VStack>
+                <Comment
+                  id={comment.id}
+                  writer={comment.writer}
+                  replies_count={comment.replies_count}
+                  created_at={comment.created_at}
+                  modified_at={comment.modified_at}
+                  detail={comment.detail}
+                  is_modified={comment.is_modified}
+                />
               ))}
             </>
           )}
