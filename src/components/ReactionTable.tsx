@@ -26,12 +26,15 @@ interface IComment {
   is_modified: boolean;
 }
 
-interface IReactions {
+interface IReactionTableProps {
   postId: number;
   scrollToPost: VoidFunction;
 }
 
-export default function Reactions({ postId, scrollToPost }: IReactions) {
+export default function ReactionTable({
+  postId,
+  scrollToPost,
+}: IReactionTableProps) {
   const [commentVisible, setCommentVisible] = useState(true);
   const {
     isLoading,

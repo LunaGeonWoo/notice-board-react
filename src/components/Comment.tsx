@@ -4,7 +4,7 @@ import { ko } from "date-fns/locale";
 import { format } from "date-fns";
 import { BiSolidDownArrow } from "react-icons/bi";
 
-interface IComment {
+interface ICommentProps {
   id: number;
   writer: {
     id: number;
@@ -25,7 +25,7 @@ export default function Comment({
   modified_at,
   detail,
   is_modified,
-}: IComment) {
+}: ICommentProps) {
   return (
     <VStack
       key={id}

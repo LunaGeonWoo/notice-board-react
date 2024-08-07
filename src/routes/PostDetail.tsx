@@ -19,7 +19,7 @@ import {} from "react-icons/bi";
 import { formatModifiedDate } from "../utils/dateUtils";
 import { useRef } from "react";
 import Home from "./Home";
-import Reactions from "../components/Reactions";
+import ReactionTable from "../components/ReactionTable";
 
 interface IPostDetail {
   id: number;
@@ -160,7 +160,7 @@ export default function PostDetail() {
       </HStack>
 
       <div ref={reactionsRef} />
-      <Reactions postId={parseInt(postId!)} scrollToPost={scrollToPost} />
+      <ReactionTable postId={parseInt(postId!)} scrollToPost={scrollToPost} />
       <Home />
     </Box>
   );
