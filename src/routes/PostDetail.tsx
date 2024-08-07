@@ -1,12 +1,11 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getPost, getPostComments } from "../api";
+import { getPost } from "../api";
 import {
   Box,
   Button,
   Heading,
   HStack,
-  Select,
   Skeleton,
   SkeletonText,
   Spacer,
@@ -15,18 +14,12 @@ import {
 } from "@chakra-ui/react";
 import { ko } from "date-fns/locale";
 import { format } from "date-fns";
-import {
-  BiDislike,
-  BiLike,
-  BiSolidDislike,
-  BiSolidLike,
-  BiSolidUpArrow,
-} from "react-icons/bi";
-import { BiSolidDownArrow } from "react-icons/bi";
+import { BiDislike, BiLike, BiSolidDislike, BiSolidLike } from "react-icons/bi";
+import {} from "react-icons/bi";
 import { formatModifiedDate } from "../utils/dateUtils";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import Home from "./Home";
-import Comment from "../components/Comment";
+import Reactions from "../components/Reactions";
 
 interface IPostDetail {
   id: number;
@@ -47,36 +40,16 @@ interface IPostDetail {
   is_modified: boolean;
   modified_at: string;
 }
-interface IComment {
-  id: number;
-  writer: {
-    id: number;
-    name: string;
-  };
-  replies_count: number;
-  created_at: string;
-  modified_at: string;
-  detail: string;
-  is_modified: boolean;
-}
 
 export default function PostDetail() {
-  const [commentVisible, setCommentVisible] = useState(true);
   const { postId } = useParams();
   const postRef = useRef<HTMLDivElement>(null);
   const reactionsRef = useRef<HTMLDivElement>(null);
-  const { isLoading: isPostLoading, data: post } = useQuery<IPostDetail>({
+  const { isLoading, data: post } = useQuery<IPostDetail>({
     queryKey: [`posts`, postId],
     queryFn: getPost,
   });
-  const {
-    isLoading: isCommentsLoading,
-    data: comments,
-    refetch: refetchComments,
-  } = useQuery<IComment[]>({
-    queryKey: [`posts`, postId, `comments`],
-    queryFn: getPostComments,
-  });
+
   const scrollToPost = () => {
     postRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -89,8 +62,8 @@ export default function PostDetail() {
       <div ref={postRef} />
       <VStack align="start" borderBottomWidth={3} pb={2} mb={5}>
         <HStack w={"100%"} minH={"10"}>
-          {isPostLoading ? (
-            <Skeleton isLoaded={!isPostLoading} h={"29.25px"} w={"400px"} />
+          {isLoading ? (
+            <Skeleton isLoaded={!isLoading} h={"29.25px"} w={"400px"} />
           ) : (
             <Heading fontSize={"22"}>{post?.title}</Heading>
           )}
@@ -103,7 +76,7 @@ export default function PostDetail() {
           )}
         </HStack>
         <HStack w={"100%"}>
-          {isPostLoading ? (
+          {isLoading ? (
             <Skeleton w={"210px"} h={"24.01px"} />
           ) : (
             <>
@@ -122,7 +95,7 @@ export default function PostDetail() {
             <Text>{formatModifiedDate(post.modified_at)}</Text>
           )}
           <Spacer />
-          {isPostLoading ? (
+          {isLoading ? (
             <Skeleton w={"150px"} h={"24.01px"} />
           ) : (
             <>
@@ -132,7 +105,7 @@ export default function PostDetail() {
               <Text>|</Text>
             </>
           )}
-          {isPostLoading ? (
+          {isLoading ? (
             <Skeleton w={"79.3px"} h={"40px"} />
           ) : (
             <Button
@@ -145,7 +118,7 @@ export default function PostDetail() {
           )}
         </HStack>
       </VStack>
-      {isPostLoading ? (
+      {isLoading ? (
         <SkeletonText skeletonHeight={"4"} spacing={"2"} />
       ) : (
         <Text>{post?.detail}</Text>
@@ -155,7 +128,7 @@ export default function PostDetail() {
         <Box borderWidth="1px" borderRadius="lg" px={7} py={4}>
           <HStack spacing={5} alignItems="center">
             <HStack>
-              <Skeleton isLoaded={!isPostLoading} minW={"8.63px"} minH={"24px"}>
+              <Skeleton isLoaded={!isLoading} minW={"8.63px"} minH={"24px"}>
                 <Text color="red.500" fontWeight="bold">
                   {post?.likes_count}
                 </Text>
@@ -178,7 +151,7 @@ export default function PostDetail() {
               >
                 싫어요
               </Button>
-              <Skeleton isLoaded={!isPostLoading} minW={"8.63px"} minH={"24px"}>
+              <Skeleton isLoaded={!isLoading} minW={"8.63px"} minH={"24px"}>
                 <Text>{post?.dislikes_count}</Text>
               </Skeleton>
             </HStack>
@@ -187,62 +160,7 @@ export default function PostDetail() {
       </HStack>
 
       <div ref={reactionsRef} />
-      <HStack borderBottomWidth={2} pb={2}>
-        <Text>
-          전체 반응{" "}
-          <Text as="span" color="red.500">
-            {post?.num_of_reactions}
-          </Text>
-          개
-        </Text>
-        <Select w={100}>
-          <option value={"register"}>등록순</option>
-          <option value={"recent"}>최신순</option>
-          <option value={"reply"}>답글순</option>
-        </Select>
-        <Spacer />
-        <Button variant={"unstyled"} p={2} onClick={scrollToPost}>
-          본문 보기
-        </Button>
-        <Text>|</Text>
-        <Button
-          variant={""}
-          p={2}
-          rightIcon={commentVisible ? <BiSolidUpArrow /> : <BiSolidDownArrow />}
-          onClick={() => setCommentVisible((current) => !current)}
-        >
-          {commentVisible ? "댓글 닫기" : "댓글 열기"}
-        </Button>
-        <Text>|</Text>
-        <Button variant={"unstyled"} p={2} onClick={() => refetchComments}>
-          새로고침
-        </Button>
-      </HStack>
-      {commentVisible && (
-        <VStack my={2}>
-          {isCommentsLoading ? (
-            <>
-              <Skeleton w={"full"} height={138} />
-              <Skeleton w={"full"} height={90} />
-              <Skeleton w={"full"} height={90} />
-            </>
-          ) : (
-            <>
-              {comments?.map((comment) => (
-                <Comment
-                  id={comment.id}
-                  writer={comment.writer}
-                  replies_count={comment.replies_count}
-                  created_at={comment.created_at}
-                  modified_at={comment.modified_at}
-                  detail={comment.detail}
-                  is_modified={comment.is_modified}
-                />
-              ))}
-            </>
-          )}
-        </VStack>
-      )}
+      <Reactions postId={parseInt(postId!)} scrollToPost={scrollToPost} />
       <Home />
     </Box>
   );
