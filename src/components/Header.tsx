@@ -14,8 +14,10 @@ import LogInModal from "./LogInModal";
 import SignUpModal from "./SignUpModal";
 import { FaMoon, FaSun } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import useUser from "../lib/useUser";
 
 export default function Header() {
+  const { isLoading: isUserLoading, user, isLoggedIn } = useUser();
   const {
     isOpen: isLogInOpen,
     onOpen: onLogInOpen,
@@ -51,10 +53,18 @@ export default function Header() {
               icon={colorModeIcon}
               borderRadius={"50%"}
             />
-            <Button onClick={onLogInOpen}>로그인</Button>
-            <Button colorScheme="messenger" onClick={onSignUpOpen}>
-              회원가입
-            </Button>
+            {!isUserLoading ? (
+              !isLoggedIn ? (
+                <>
+                  <Button onClick={onLogInOpen}>로그인</Button>
+                  <Button colorScheme="messenger" onClick={onSignUpOpen}>
+                    회원가입
+                  </Button>
+                </>
+              ) : (
+                <Text fontWeight={"extrabold"}>{user?.name}</Text>
+              )
+            ) : null}
           </HStack>
         </HStack>
       </Box>

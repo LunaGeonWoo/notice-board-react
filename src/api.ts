@@ -3,6 +3,7 @@ import axios from "axios";
 
 const instance = axios.create({
   baseURL: "http://127.0.0.1:8000/api/v1/",
+  withCredentials: true,
 });
 
 export const getPosts = () =>
@@ -19,9 +20,13 @@ export const getPostComments = ({ queryKey }: QueryFunctionContext) => {
     .get(`posts/${postId}/comments/`)
     .then((response) => response.data);
 };
+
 export const getCommentReplies = ({ queryKey }: QueryFunctionContext) => {
   const [, commentId] = queryKey;
   return instance
     .get(`comments/${commentId}/replies/`)
     .then((response) => response.data);
 };
+
+export const getMe = () =>
+  instance.get("users/me/").then((response) => response.data);
