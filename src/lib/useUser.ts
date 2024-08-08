@@ -15,6 +15,7 @@ export default function useUser() {
     isLoading,
     data: user,
     isError,
+    refetch,
   } = useQuery<IUser>({
     queryKey: ["me"],
     queryFn: getMe,
@@ -24,5 +25,6 @@ export default function useUser() {
     isLoading,
     user,
     isLoggedIn: !isError,
+    refetch,
   };
 }

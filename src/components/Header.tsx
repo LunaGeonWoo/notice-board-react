@@ -3,10 +3,15 @@ import {
   Button,
   HStack,
   IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Text,
   useColorMode,
   useColorModeValue,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 
 import { IoClipboard } from "react-icons/io5";
@@ -15,9 +20,15 @@ import SignUpModal from "./SignUpModal";
 import { FaMoon, FaSun } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import useUser from "../lib/useUser";
+import { logOut } from "../api";
 
 export default function Header() {
-  const { isLoading: isUserLoading, user, isLoggedIn } = useUser();
+  const {
+    isLoading: isUserLoading,
+    user,
+    isLoggedIn,
+    refetch: refetchMe,
+  } = useUser();
   const {
     isOpen: isLogInOpen,
     onOpen: onLogInOpen,
@@ -30,7 +41,16 @@ export default function Header() {
   } = useDisclosure();
   const { toggleColorMode } = useColorMode();
   const colorModeIcon = useColorModeValue(<FaMoon />, <FaSun />);
-
+  const toast = useToast();
+  const onLogOut = async () => {
+    await logOut();
+    refetchMe();
+    toast({
+      title: "로그아웃",
+      description: "로그아웃 되었습니다.",
+      status: "success",
+    });
+  };
   return (
     <>
       <Box>
@@ -62,7 +82,14 @@ export default function Header() {
                   </Button>
                 </>
               ) : (
-                <Text fontWeight={"extrabold"}>{user?.name}</Text>
+                <Menu>
+                  <MenuButton>
+                    <Text fontWeight={"extrabold"}>{user?.name}</Text>
+                  </MenuButton>
+                  <MenuList>
+                    <MenuItem onClick={onLogOut}>로그아웃</MenuItem>
+                  </MenuList>
+                </Menu>
               )
             ) : null}
           </HStack>
