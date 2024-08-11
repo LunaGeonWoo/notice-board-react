@@ -1,5 +1,5 @@
 import { Heading, Spinner, Text, useToast, VStack } from "@chakra-ui/react";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { githubLogIn } from "../api";
 import { useQueryClient } from "@tanstack/react-query";
@@ -9,7 +9,8 @@ export default function GithubConfirm() {
   const toast = useToast();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const confirmLogIn = async () => {
+
+  const confirmLogIn = useCallback(async () => {
     const params = new URLSearchParams(search);
     const code = params.get("code");
     if (code) {
@@ -30,10 +31,12 @@ export default function GithubConfirm() {
       }
       navigate("/");
     }
-  };
+  }, [search, toast, queryClient, navigate]);
+
   useEffect(() => {
     confirmLogIn();
-  }, []);
+  }, [confirmLogIn]);
+
   return (
     <VStack justifyContent={"center"} mt={50}>
       <Heading>로그인 중...</Heading>
