@@ -16,11 +16,12 @@ import {
   useToast,
   Text,
 } from "@chakra-ui/react";
-import { FaLock, FaUser } from "react-icons/fa6";
+import { FaRegUser } from "react-icons/fa6";
 import SocialLogIn from "./SocialLogIn";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { usernameLogIn } from "../api";
+import { TbLock } from "react-icons/tb";
 interface ILogInModalProps {
   isOpen: boolean;
   onClose: VoidFunction;
@@ -68,7 +69,7 @@ export default function LogInModal({ isOpen, onClose }: ILogInModalProps) {
             <VStack>
               <InputGroup>
                 <InputLeftElement>
-                  <FaUser />
+                  <FaRegUser />
                 </InputLeftElement>
                 <Input
                   {...register("username", {
@@ -80,7 +81,7 @@ export default function LogInModal({ isOpen, onClose }: ILogInModalProps) {
               </InputGroup>
               <InputGroup>
                 <InputLeftElement>
-                  <FaLock />
+                  <TbLock />
                 </InputLeftElement>
                 <Input
                   {...register("password", {
