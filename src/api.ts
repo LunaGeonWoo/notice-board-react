@@ -86,3 +86,22 @@ export const usernameLogIn = ({
       }
     )
     .then((response) => response);
+
+interface ISignUpVariables {
+  username: string;
+  password: string;
+  name: string;
+  email: string;
+}
+export const signUp = ({ username, password, name, email }: ISignUpVariables) =>
+  instance
+    .post(
+      `users/`,
+      { username, password, name, email },
+      {
+        headers: {
+          "X-CSRFToken": Cookie.get("csrftoken") || "",
+        },
+      }
+    )
+    .then((response) => response);
