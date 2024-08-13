@@ -8,6 +8,7 @@ import {
   MenuItem,
   MenuList,
   Text,
+  ToastId,
   useColorMode,
   useColorModeValue,
   useDisclosure,
@@ -21,6 +22,8 @@ import { FaMoon, FaSun } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import useUser from "../lib/useUser";
 import { logOut } from "../api";
+import { useMutation } from "@tanstack/react-query";
+import { useRef } from "react";
 
 export default function Header() {
   const {
@@ -42,14 +45,28 @@ export default function Header() {
   const { toggleColorMode } = useColorMode();
   const colorModeIcon = useColorModeValue(<FaMoon />, <FaSun />);
   const toast = useToast();
-  const onLogOut = async () => {
-    await logOut();
-    refetchMe();
-    toast({
-      title: "로그아웃",
-      description: "로그아웃 되었습니다.",
-      status: "success",
-    });
+  const toastId = useRef<ToastId>();
+  const mutation = useMutation({
+    mutationFn: logOut,
+    onMutate: () => {
+      toastId.current = toast({
+        title: "로그아웃 중...",
+        status: "loading",
+      });
+    },
+    onSuccess: () => {
+      if (toastId.current) {
+        refetchMe();
+        toast.update(toastId.current, {
+          title: "로그아웃",
+          description: "로그아웃 되었습니다.",
+          status: "success",
+        });
+      }
+    },
+  });
+  const onClick = () => {
+    mutation.mutate();
   };
   return (
     <>
@@ -87,7 +104,7 @@ export default function Header() {
                     <Text fontWeight={"extrabold"}>{user?.name}</Text>
                   </MenuButton>
                   <MenuList>
-                    <MenuItem onClick={onLogOut}>로그아웃</MenuItem>
+                    <MenuItem onClick={onClick}>로그아웃</MenuItem>
                   </MenuList>
                 </Menu>
               )
