@@ -10,7 +10,7 @@ export default function KakaoConfirm() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const mutate = useMutation({
+  const mutation = useMutation({
     mutationFn: kakaoLogIn,
     onSuccess: () => {
       toast({
@@ -35,9 +35,9 @@ export default function KakaoConfirm() {
     const params = new URLSearchParams(search);
     const code = params.get("code");
     if (code) {
-      mutate.mutate(code);
+      mutation.mutate(code);
     }
-  }, [mutate, search]);
+  }, []);
 
   return (
     <VStack justifyContent={"center"} mt={50}>
