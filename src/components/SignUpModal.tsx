@@ -58,6 +58,7 @@ export default function SignUpModal({ isOpen, onClose }: ISingUpModalProps) {
       reset();
     },
     onError: (error: AxiosError) => {
+      toast.closeAll();
       const errorMessages = Object.entries(error.response?.data || {});
       errorMessages.forEach(([key, messages]) => {
         messages.forEach((message: string) => {
