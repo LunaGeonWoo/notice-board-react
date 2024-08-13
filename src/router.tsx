@@ -4,6 +4,7 @@ import NotFound from "./routes/NotFound";
 import Home from "./routes/Home";
 import PostDetail from "./routes/PostDetail";
 import GithubConfirm from "./routes/GithubConfirm";
+import KakaoConfirm from "./routes/KakaoConfirm";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -17,7 +18,10 @@ const router = createBrowserRouter([
       },
       {
         path: "social",
-        children: [{ path: "github", element: <GithubConfirm /> }],
+        children: [
+          { path: "github", element: <GithubConfirm /> },
+          { path: "kakao", element: <KakaoConfirm /> },
+        ],
       },
     ],
   },
