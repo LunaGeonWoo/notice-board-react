@@ -5,6 +5,7 @@ import Home from "./routes/Home";
 import PostDetail from "./routes/PostDetail";
 import GithubConfirm from "./routes/GithubConfirm";
 import KakaoConfirm from "./routes/KakaoConfirm";
+import UploadPost from "./routes/UploadPost";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -13,8 +14,17 @@ const router = createBrowserRouter([
     children: [
       { path: "", element: <Home /> },
       {
-        path: "posts/:postId/",
-        element: <PostDetail />,
+        path: "posts",
+        children: [
+          {
+            path: "upload",
+            element: <UploadPost />,
+          },
+          {
+            path: ":postId",
+            element: <PostDetail />,
+          },
+        ],
       },
       {
         path: "social",

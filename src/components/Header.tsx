@@ -14,16 +14,16 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-
 import { IoClipboard } from "react-icons/io5";
 import LogInModal from "./LogInModal";
 import SignUpModal from "./SignUpModal";
-import { FaMoon, FaSun } from "react-icons/fa6";
+import { FaMoon, FaPencil, FaSun } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import useUser from "../lib/useUser";
 import { logOut } from "../api";
 import { useMutation } from "@tanstack/react-query";
 import { useRef } from "react";
+import { RiLogoutBoxLine } from "react-icons/ri";
 
 export default function Header() {
   const {
@@ -104,7 +104,20 @@ export default function Header() {
                     <Text fontWeight={"extrabold"}>{user?.name}</Text>
                   </MenuButton>
                   <MenuList>
-                    <MenuItem onClick={onClick}>로그아웃</MenuItem>
+                    <Link to={"posts/upload"}>
+                      <MenuItem>
+                        <HStack>
+                          <FaPencil />
+                          <Text>글쓰기</Text>
+                        </HStack>
+                      </MenuItem>
+                    </Link>
+                    <MenuItem onClick={onClick}>
+                      <HStack>
+                        <RiLogoutBoxLine />
+                        <Text>로그아웃</Text>
+                      </HStack>
+                    </MenuItem>
                   </MenuList>
                 </Menu>
               )

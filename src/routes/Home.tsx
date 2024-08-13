@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   HStack,
   IconButton,
   Input,
@@ -8,7 +7,6 @@ import {
   InputRightElement,
   Skeleton,
 } from "@chakra-ui/react";
-import { FaPencil } from "react-icons/fa6";
 import { FaSearch } from "react-icons/fa";
 import PostTableHeader from "../components/PostTableHeader";
 import PostItem from "../components/PostItem";
@@ -40,7 +38,6 @@ export default function Home() {
             <IconButton aria-label="검색" icon={<FaSearch />} />
           </InputRightElement>
         </InputGroup>
-        <Button leftIcon={<FaPencil />}>글쓰기</Button>
       </HStack>
       <PostTableHeader />
 
